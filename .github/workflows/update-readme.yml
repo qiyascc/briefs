@@ -27,9 +27,9 @@ jobs:
           # Birden fazla commit varsa, yeni klasörleri bul
           NEW_FOLDERS=$(git diff --name-only --diff-filter=A HEAD^ HEAD | grep -E '.*/$')
         fi
-        # Output'u doğru şekilde ayarla
-        echo "new_folders=${NEW_FOLDERS}" >> $GITHUB_OUTPUT
-
+        # Output'u eski yöntemle ayarla
+        echo "::set-output name=new_folders::${NEW_FOLDERS}"
+        
     - name: Update README.md
       if: steps.find-folders.outputs.new_folders != ''
       run: |
