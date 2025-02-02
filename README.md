@@ -1,1 +1,3 @@
 # briefs
+
+- [.github](./.github)
