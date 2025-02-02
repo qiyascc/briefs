@@ -15,7 +15,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v3
       with:
-        token: ${{ secrets.PAT }} 
+        token: ${{ secrets.PAT }}
 
     - name: Find new folders
       id: find-folders
@@ -31,9 +31,10 @@ jobs:
     - name: Update README.md
       if: steps.find-folders.outputs.new_folders != ''
       run: |
-        # README.md dosyasını güncelle
         for folder in ${{ steps.find-folders.outputs.new_folders }}; do
-          printf "\n- [${folder%/}](./${folder})\n" >> README.md
+          if ! grep -q "\[${folder%/}\]" README.md; then
+            printf "\n- [${folder%/}](./${folder})\n" >> README.md
+          fi
         done
 
     - name: Commit and push changes
