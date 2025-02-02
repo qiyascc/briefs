@@ -3,9 +3,9 @@ name: Update README on Folder Creation
 on:
   push:
     branches:
-      - main
+      - main  # Varsayılan branch'iniz main değilse burayı değiştirin
     paths:
-      - '**/'
+      - '**/'  # Klasör değişikliklerini takip et
 
 jobs:
   update-readme:
@@ -18,12 +18,21 @@ jobs:
     - name: Find new folders
       id: find-folders
       run: |
-        NEW_FOLDERS=$(git diff --name-only --diff-filter=A HEAD^ HEAD | grep -E '.*/$')
+        # Repository'deki commit sayısını kontrol et
+        COMMIT_COUNT=$(git rev-list --count HEAD)
+        if [ "$COMMIT_COUNT" -eq 1 ]; then
+          # İlk commit ise, tüm klasörleri al
+          NEW_FOLDERS=$(git ls-tree -d --name-only HEAD)
+        else
+          # Birden fazla commit varsa, yeni klasörleri bul
+          NEW_FOLDERS=$(git diff --name-only --diff-filter=A HEAD^ HEAD | grep -E '.*/$')
+        fi
         echo "new_folders=${NEW_FOLDERS}" >> $GITHUB_OUTPUT
 
     - name: Update README.md
       if: steps.find-folders.outputs.new_folders != ''
       run: |
+        # README.md dosyasını güncelle
         for folder in ${{ steps.find-folders.outputs.new_folders }}; do
           echo "- [${folder%/}](./${folder})" >> README.md
         done
