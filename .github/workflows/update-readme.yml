@@ -3,9 +3,9 @@ name: Update README on Folder Creation
 on:
   push:
     branches:
-      - main  # Varsayılan branch'iniz main değilse burayı değiştirin
+      - main
     paths:
-      - '**/'  # Klasör değişikliklerini takip et
+      - '**/'
 
 jobs:
   update-readme:
